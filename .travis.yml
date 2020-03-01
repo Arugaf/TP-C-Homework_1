@@ -1,4 +1,4 @@
-language: c
+language: cpp
 
 os: linux
 
@@ -27,6 +27,6 @@ script:
   - cd build
   - cmake ..
   - make
-  - valgrind --tool=memcheck --leak-check=full ./TP_C_HomeWork_1 < ../travis_input.txt
+  - valgrind --tool=memcheck --leak-check=full ./TP_C_Homework_1 < ../travis_input.txt
   - cppcheck --enable=all --std=c11 --check-config --suppress=missingIncludeSystem -I ../include ../src
   - ctest
