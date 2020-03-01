@@ -1,9 +1,15 @@
-language: cpp
+sudo: false
+dist: trusty
+
+language: c
 
 os: linux
 
 compiler:
   - gcc
+
+install:
+  - if [[ $CXX = g++ ]]; then export CXX="g++-7" CC="gcc-7"; fi
 
 addons:
   apt:
@@ -11,7 +17,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - cmake
-      - gcc-6
+      - gcc-7
       - valgrind
       - cppcheck
 
