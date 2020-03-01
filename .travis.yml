@@ -17,9 +17,10 @@ addons:
 
 before_script:
   - |
-    cat > travis_input.txt
+    cat > travis_input.txt << EOF
     2 2
     4 2 1 3
+    EOF
 
 script:
   - mkdir -p build
