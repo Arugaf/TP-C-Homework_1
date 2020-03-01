@@ -15,6 +15,7 @@ addons:
     packages:
       - cmake
       - gcc-7
+      - g++-7
       - valgrind
       - cppcheck
 
@@ -27,7 +28,9 @@ before_script:
 
 script:
   - sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc
+  - sudo ln -s /usr/bin/g++-7 /usr/local/bin/g++
   - export CC=/usr/bin/gcc-7
+  - export CXX=/usr/bin/g++-7
   - mkdir -p build
   - cd build
   - cmake ..
