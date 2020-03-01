@@ -32,7 +32,7 @@ TEST(MatrixCreation, NoMemory) {
     rlimit rlimit_prev = {};
     getrlimit(RLIMIT_DATA, &rlimit_prev);
 
-    const rlimit rlimit = {512, rlimit_prev.rlim_max};
+    const rlimit rlimit = {1, rlimit_prev.rlim_max};
 
     setrlimit(RLIMIT_DATA, &rlimit);
 
