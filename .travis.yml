@@ -8,9 +8,6 @@ os: linux
 compiler:
   - gcc
 
-install:
-  - if [[ $CXX = g++ ]]; then export CXX="g++-7" CC="gcc-7"; fi
-
 addons:
   apt:
     sources:
@@ -29,8 +26,8 @@ before_script:
     EOF
 
 script:
-  - sudo ln -s /usr/bin/gcc-6 /usr/local/bin/gcc
-  - export CC=/usr/bin/gcc-6
+  - sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc
+  - export CC=/usr/bin/gcc-7
   - mkdir -p build
   - cd build
   - cmake ..
