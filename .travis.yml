@@ -1,0 +1,31 @@
+language: c
+
+os: linux
+
+compiler:
+  - gcc
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - cmake
+      - gcc-6
+      - valgrind
+      - cppcheck
+
+before_script:
+  - |
+    cat > travis_input.txt
+    2 2
+    4 2 1 3
+
+script:
+  - mkdir -p build
+  - cd build
+  - cmake ..
+  - make
+  - valgrind --tool=memcheck --leak-check=full ./TP_C_HomeWork_1 < ../travis_input.txt
+  - cppcheck --enable=all --std=c11 --check-config --suppress=missingIncludeSystem -I ../include ../src
+  - ctest
