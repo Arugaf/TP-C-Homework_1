@@ -1,4 +1,4 @@
-sudo: false
+sudo: required
 dist: trusty
 
 language: c
@@ -29,6 +29,8 @@ before_script:
     EOF
 
 script:
+  - sudo ln -s /usr/bin/gcc-6 /usr/local/bin/gcc
+  - export CC=/usr/bin/gcc-6
   - mkdir -p build
   - cd build
   - cmake ..
