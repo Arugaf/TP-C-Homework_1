@@ -19,8 +19,3 @@ add_subdirectory(googletest)
 add_subdirectory(test)
 
 add_library(${project_name}_lib STATIC ${PROJECT_SOURCE_DIR}/src/matrix.c)
-
-if (COVERAGE)
-    target_compile_options(tests PRIVATE --coverage)
-    target_link_libraries(tests PRIVATE --coverage)
-endif()
