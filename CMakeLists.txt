@@ -13,9 +13,6 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.c)
 
 add_executable(${project_name} ${sources})
 
-target_compile_options(${project_name} PRIVATE --coverage)
-target_link_libraries(${project_name} PRIVATE --coverage)
-
 enable_testing()
 add_subdirectory(googletest)
 add_subdirectory(test)
