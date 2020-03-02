@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 
+set(COVERAGE OFF CACHE BOOL "Coverage")
 set(project_name TP_C_Homework_1)
 project(${project_name})
 
@@ -18,3 +19,8 @@ add_subdirectory(googletest)
 add_subdirectory(test)
 
 add_library(${project_name}_lib STATIC ${PROJECT_SOURCE_DIR}/src/matrix.c)
+
+if (COVERAGE)
+    target_compile_options(tests PRIVATE --coverage)
+    target_link_libraries(tests PRIVATE --coverage)
+endif()

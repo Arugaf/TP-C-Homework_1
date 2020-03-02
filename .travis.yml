@@ -36,11 +36,11 @@ script:
   - export CXX=/usr/bin/g++-7
   - mkdir -p build
   - cd build
-  - cmake ..
-  - ./configure --enable-gcov && make
+  - cmake .. -DCOVERAGE=1
+  - --enable-gcov && make
   - valgrind --tool=memcheck --leak-check=full ./TP_C_Homework_1 < ../travis_input.txt
   - cppcheck --enable=all --std=c11 --check-config --suppress=missingIncludeSystem -I ../include ../src
   - ctest -R matrix_test -VV
 
 after_success:
-  - coveralls --exclude lib --exclude tests --gcov-options '\-lp'
+  - coveralls --root . -E ".*gtest.*" -E ".*CMakeFiles.*"
