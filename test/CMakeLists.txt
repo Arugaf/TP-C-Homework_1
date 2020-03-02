@@ -10,9 +10,9 @@ include_directories("${PROJECT_SOURCE_DIR}/include")
 
 file(GLOB tests "${PROJECT_SOURCE_DIR}/test/*.cpp")
 
-add_executable(${project_name}_${test_name} ${tests})
+add_executable(${test_name} ${tests})
 
-target_compile_options(${project_name}_${test_name} PRIVATE --coverage)
-target_link_libraries(${project_name}_${test_name} ${project_name}_lib gtest_main gtest --coverage)
+target_compile_options(${test_name} PRIVATE --coverage)
+target_link_libraries(${test_name} ${project_name}_lib gtest_main gtest --coverage)
 
 add_test(NAME ${test_name} COMMAND ${test_name})

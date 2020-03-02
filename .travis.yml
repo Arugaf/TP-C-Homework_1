@@ -40,7 +40,7 @@ script:
   - make
   - valgrind --tool=memcheck --leak-check=full ./TP_C_Homework_1 < ../travis_input.txt
   - cppcheck --enable=all --std=c11 --check-config --suppress=missingIncludeSystem -I ../include ../src
-  - ctest -R TP_C_Homework_1_matrix_test -VV
+  - ctest matrix_test -VV
 
 after_success:
   - coveralls --root . -E ".*gtest.*" -E ".*CMakeFiles.*"
