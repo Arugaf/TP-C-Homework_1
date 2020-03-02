@@ -27,14 +27,24 @@ before_script:
     EOF
 
 script:
+  - pip install --user git+git://github.com/eddyxu/cpp-coveralls.git
   - sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc
   - sudo ln -s /usr/bin/g++-7 /usr/local/bin/g++
   - export CC=/usr/bin/gcc-7
   - export CXX=/usr/bin/g++-7
   - mkdir -p build
   - cd build
-  - cmake ..
+  - cmake -DENABLE_COVERAGE=ON -DCMAKE_CXX_COMPILER="g++-7" ..
   - make
+  - make test
   - valgrind --tool=memcheck --leak-check=full ./TP_C_Homework_1 < ../travis_input.txt
   - cppcheck --enable=all --std=c11 --check-config --suppress=missingIncludeSystem -I ../include ../src
   - ctest matrix_test -VV
+
+after_success:
+  - cd ..
+  - |
+    coveralls --build-root build --gcov-options '\-lp' \
+      -e build/external \
+      -e build/include \
+      -e build/CMakeFiles
