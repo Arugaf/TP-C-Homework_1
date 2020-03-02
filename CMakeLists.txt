@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
 
-set(COVERAGE OFF CACHE BOOL "Coverage")
 set(project_name TP_C_Homework_1)
 project(${project_name})
 
