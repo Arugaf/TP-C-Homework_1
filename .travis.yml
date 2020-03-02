@@ -20,7 +20,7 @@ addons:
       - cppcheck
 
 before_install:
-  - pip-install --user cpp-coveralls
+  - pip install --user cpp-coveralls
 
 before_script:
   - |
