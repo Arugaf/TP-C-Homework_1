@@ -18,16 +18,10 @@ addons:
       - g++-7
       - valgrind
       - cppcheck
-
-before_script:
-  - |
-    cat > travis_input.txt << EOF
-    2 2
-    4 2 1 3
-    EOF
+      - lcov
 
 script:
-  - pip install --user git+git://github.com/eddyxu/cpp-coveralls.git
+  - pip install --user cpp-coveralls
   - sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc
   - sudo ln -s /usr/bin/g++-7 /usr/local/bin/g++
   - export CC=/usr/bin/gcc-7
@@ -36,15 +30,9 @@ script:
   - cd build
   - cmake -DENABLE_COVERAGE=ON -DCMAKE_CXX_COMPILER="g++-7" ..
   - make
-  - make test
-  - valgrind --tool=memcheck --leak-check=full ./TP_C_Homework_1 < ../travis_input.txt
+  - valgrind --tool=memcheck --leak-check=full --leak-resolution=med ./test/matrix_test
   - cppcheck --enable=all --std=c11 --check-config --suppress=missingIncludeSystem -I ../include ../src
-  - ctest matrix_test -VV
+  - ctest
 
 after_success:
-  - cd ..
-  - |
-    coveralls --build-root build --gcov-options '\-lp' \
-      -e build/external \
-      -e build/include \
-      -e build/CMakeFiles
+  - coveralls --root .. --build-root . -E ".*CMakeFiles.*" -E ".*googletest*" --gcov /usr/bin/gcov --gcov-options '\-lp'

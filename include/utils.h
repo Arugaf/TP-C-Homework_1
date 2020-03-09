@@ -7,26 +7,25 @@
 
 #define INVALID_DATA -1
 
-#include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Matrix {
+typedef struct matrix {
     long double* elements;
     size_t rows;
     size_t cols;
-} Matrix;
+} matrix;
 
 typedef struct ElementsWithIndexes {
     long double element_value;
     size_t index;
-} ElemsWithIndexes;
+} elems_with_indexes;
 
-Matrix* CreateMatrix(size_t rows, size_t cols);
-Matrix* SortMatrix(const Matrix* matrix);
-void PrintMatrix(const Matrix* matrix);
-int FreeMatrix(Matrix* matrix);
-int FillMatrix(Matrix* matrix);
-int Comparator(const void* ls, const void* rs);
+matrix* create_matrix(size_t rows, size_t cols);
+matrix* sort_matrix(const matrix* source_matrix);
+void print_matrix(const matrix* source_matrix);
+int free_matrix(matrix* source_matrix);
+int fill_matrix(matrix* source_matrix);
+int comparator(const void* ls, const void* rs);
 
 #endif  // TP_C_HOMEWORK_UTILS_H_1

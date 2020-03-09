@@ -5,16 +5,16 @@ int main() {
     size_t cols = 0;
     scanf("%zu %zu", &rows, &cols);
 
-    Matrix* matrix = CreateMatrix(rows, cols);
-    FillMatrix(matrix);
+    matrix* test_matrix = create_matrix(rows, cols);
+    fill_matrix(test_matrix);
 
-    Matrix* sorted_matrix = SortMatrix(matrix);
+    matrix* sorted_matrix = sort_matrix(test_matrix);
 
-    PrintMatrix(matrix);
-    PrintMatrix(sorted_matrix);
+    print_matrix(test_matrix);
+    print_matrix(sorted_matrix);
 
-    FreeMatrix(matrix);
-    FreeMatrix(sorted_matrix);
+    free_matrix(test_matrix);
+    free_matrix(sorted_matrix);
     return 0;
 }
 
