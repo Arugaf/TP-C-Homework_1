@@ -6,26 +6,28 @@
 #define TP_C_HOMEWORK_UTILS_H_1
 
 #define INVALID_DATA -1
+#define ALLOCATION_FAILED -2
+#define INVALID_STREAM -3
 
 #include <stdio.h>
 #include <stdlib.h>
 
 typedef struct matrix {
-    long double* elements;
+    double* elements;
     size_t rows;
     size_t cols;
 } matrix;
 
 typedef struct ElementsWithIndexes {
-    long double element_value;
+    double element_value;
     size_t index;
 } elems_with_indexes;
 
-matrix* create_matrix(size_t rows, size_t cols);
-matrix* sort_matrix(const matrix* source_matrix);
-void print_matrix(const matrix* source_matrix);
+int create_matrix(matrix** dest, const size_t rows, const size_t cols);
+int sort_matrix(const matrix* source_matrix, matrix** dest);
+void print_matrix(const matrix* source_matrix, FILE* output);
 int free_matrix(matrix* source_matrix);
-int fill_matrix(matrix* source_matrix);
+int fill_matrix(matrix* source_matrix, FILE* input);
 int comparator(const void* ls, const void* rs);
 
 #endif  // TP_C_HOMEWORK_UTILS_H_1

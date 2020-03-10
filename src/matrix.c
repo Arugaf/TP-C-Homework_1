@@ -4,34 +4,30 @@
 
 #include "utils.h"
 
-matrix* create_matrix(const size_t rows, const size_t cols) {
+int create_matrix(matrix** dest, const size_t rows, const size_t cols) {
     if (rows <= 0 || cols <= 0) {
-        printf("Number of cols or rows can't be 0\n");
-        return NULL;
+        return INVALID_DATA;
     }
 
-    matrix* new_matrix = (matrix*) malloc(sizeof(matrix));
-    if (!new_matrix) {
-        printf("Memory allocation failed\n");
-        return NULL;
+    *dest = (matrix*) malloc(sizeof(matrix));
+    if (!(*dest)) {
+        return ALLOCATION_FAILED;
     }
-    new_matrix->rows = rows;
-    new_matrix->cols = cols;
+    (*dest)->rows = rows;
+    (*dest)->cols = cols;
 
-    long double* new_elements = (long double*) calloc(rows * cols, sizeof(long double));
+    double* new_elements = (double*) calloc(rows * cols, sizeof(double));
     if (!new_elements) {
-        printf("Memory allocation failed\n");
-        free(new_matrix);
-        return NULL;
+        free(dest);
+        return ALLOCATION_FAILED;
     }
-    new_matrix->elements = new_elements;
+    (*dest)->elements = new_elements;
 
-    return new_matrix;
+    return 0;
 }
 
 int free_matrix(matrix* source_matrix) {
     if (!source_matrix || !source_matrix->elements) {
-        printf("No matrix to free\n");
         return INVALID_DATA;
     }
 
@@ -41,28 +37,26 @@ int free_matrix(matrix* source_matrix) {
     return 0;
 }
 
-int fill_matrix(matrix* source_matrix) {
+int fill_matrix(matrix* source_matrix, FILE* input) {
+    if (!input) {
+        return INVALID_STREAM;
+    }
+
     if (!source_matrix || !source_matrix->elements) {
-        printf("No matrix to fill with data\n");
         return INVALID_DATA;
     }
 
     size_t matrix_size = source_matrix->rows * source_matrix->cols;
 
-    //char* input = NULL;
-    //char* end = NULL;
+    short invalid_data_flag = 0;
     for (size_t i = 0; i < matrix_size; ++i) {
-        fscanf(stdin, "%Lf", &source_matrix->elements[i]);
-        /*source_matrix->elements[i] = strtold(input, &end);
-
-        if (!source_matrix->elements[i] && (input == end)) {
-            printf("Incorrect input\n");
-            return INVALID_DATA;
+        if (!fscanf(input, "%lf", &source_matrix->elements[i])) {
+            invalid_data_flag = 1;
         }
+    }
 
-        if (input) {
-            free(input);
-        }*/
+    if (invalid_data_flag) {
+        return INVALID_DATA;
     }
 
     return 0;
@@ -72,54 +66,60 @@ int comparator(const void* ls, const void* rs) {
     return (((elems_with_indexes*)ls)->element_value > ((elems_with_indexes*)rs)->element_value);
 }
 
-matrix* sort_matrix(const matrix* source_matrix) {
+static void calculate_indexes(elems_with_indexes** array_to_fill, const matrix* source_matrix) {
+    for (size_t i = 0; i < source_matrix->cols; ++i) {
+        (*array_to_fill)[i].element_value = source_matrix->elements[i];
+        (*array_to_fill)[i].index = i;
+    }
+}
+
+static void mix_values(elems_with_indexes* array_with_indexes, const matrix* source_matrix, matrix** dest) {
+    for (size_t i = 0; i < (*dest)->cols; ++i) {
+        for (size_t j = 0; j < (*dest)->rows; ++j) {
+            (*dest)->elements[j * (*dest)->cols + i] = source_matrix->elements[j * source_matrix->cols + array_with_indexes[i].index];
+        }
+    }
+}
+
+int sort_matrix(const matrix* source_matrix, matrix** dest) {
     if (!source_matrix || !source_matrix->elements) {
-        printf("No matrix to sort\n");
-        return NULL;
+        return INVALID_DATA;
     }
 
     elems_with_indexes* elements_and_indexes = malloc((sizeof(elems_with_indexes) * source_matrix->cols));
 
     if (!elements_and_indexes) {
-        printf("Memory allocation failed\n");
-        return NULL;
+        return ALLOCATION_FAILED;
     }
 
-    for (size_t i = 0; i < source_matrix->cols; ++i) {
-        elements_and_indexes[i].element_value = source_matrix->elements[i];
-        elements_and_indexes[i].index = i;
-    }
+    calculate_indexes(&elements_and_indexes, source_matrix);
 
     qsort(elements_and_indexes, source_matrix->cols, sizeof(elems_with_indexes), comparator);
 
-    matrix * result = create_matrix(source_matrix->rows, source_matrix->cols);
-
-    if (!result) {
-        printf("Memory allocation failed\n");
+    if (create_matrix(dest, source_matrix->rows, source_matrix->cols)) {
         free(elements_and_indexes);
-        return NULL;
+        return ALLOCATION_FAILED;
     }
 
-    for (size_t i = 0; i < result->cols; ++i) {
-        for (size_t j = 0; j < result->rows; ++j) {
-            result->elements[j * result->cols + i] = source_matrix->elements[j * source_matrix->cols + elements_and_indexes[i].index];
-        }
-    }
+    mix_values(elements_and_indexes, source_matrix, dest);
 
     free(elements_and_indexes);
 
-    return result;
+    return 0;
 }
 
-void print_matrix(const matrix* source_matrix) {
+void print_matrix(const matrix* source_matrix, FILE* output) {
+    if (!output) {
+        return;
+    }
+
     if (!source_matrix || !source_matrix->elements) {
-        printf("No matrix to print\n");
         return;
     }
 
     for (size_t i = 0; i < source_matrix->rows; ++i) {
         for (size_t j = 0; j < source_matrix->cols; ++j) {
-            printf("%Lf ", source_matrix->elements[i * source_matrix->cols + j]);
+            fprintf(output, "%lf ", source_matrix->elements[i * source_matrix->cols + j]);
         }
         printf("\n");
     }
