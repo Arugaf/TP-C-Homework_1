@@ -1,5 +1,14 @@
 #include "utils.h"
 
+static int comparator(const void* ls, const void* rs) {
+    if ((!ls && !rs) || !ls) {
+        return 1;
+    } else if (!rs) {
+        return 0;
+    }
+    return (((elems_with_indexes*)ls)->element_value < ((elems_with_indexes*)rs)->element_value);
+}
+
 int main() {
     size_t rows = 0;
     size_t cols = 0;
@@ -18,7 +27,7 @@ int main() {
     }
 
     matrix* sorted_matrix = NULL;
-    if (sort_matrix(test_matrix, &sorted_matrix)) {
+    if (sort_matrix(test_matrix, &sorted_matrix, comparator)) {
         return -1;
     }
 

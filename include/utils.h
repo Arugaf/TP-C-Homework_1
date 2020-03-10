@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct matrix {
     double* elements;
@@ -24,10 +25,9 @@ typedef struct ElementsWithIndexes {
 } elems_with_indexes;
 
 int create_matrix(matrix** dest, const size_t rows, const size_t cols);
-int sort_matrix(const matrix* source_matrix, matrix** dest);
+int sort_matrix(const matrix* source_matrix, matrix** dest, int (*compar)(const void*, const void*));
 void print_matrix(const matrix* source_matrix, FILE* output);
 int free_matrix(matrix* source_matrix);
 int fill_matrix(matrix* source_matrix, FILE* input);
-int comparator(const void* ls, const void* rs);
 
 #endif  // TP_C_HOMEWORK_UTILS_H_1

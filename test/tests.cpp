@@ -11,6 +11,15 @@ extern "C" {
     #include "utils.h"
 }
 
+int comparator(const void* ls, const void* rs) {
+    if ((!ls && !rs) || !ls) {
+        return true;
+    } else if (!rs) {
+        return false;
+    }
+    return (((elems_with_indexes*)ls)->element_value < ((elems_with_indexes*)rs)->element_value);
+}
+
 TEST(MatrixCreation, IncorrectRows) {
     const size_t rows = 0;
     const size_t cols = 5;
@@ -136,7 +145,7 @@ TEST(MatrixFilling, CorrectData) {
 }
 
 TEST(MatrixSorting, NoMatrix) {
-    EXPECT_EQ(sort_matrix(nullptr, nullptr), INVALID_DATA);
+    EXPECT_EQ(sort_matrix(nullptr, nullptr, comparator), INVALID_DATA);
 }
 
 TEST(MatrixSorting, NoData) {
@@ -145,7 +154,7 @@ TEST(MatrixSorting, NoData) {
     test_matrix->rows = 5;
     test_matrix->cols = 5;
 
-    EXPECT_EQ(sort_matrix(nullptr, nullptr), INVALID_DATA);
+    EXPECT_EQ(sort_matrix(nullptr, nullptr, comparator), INVALID_DATA);
 
     free(test_matrix);
 }
@@ -175,7 +184,7 @@ TEST(MatrixSorting, CorrectData) {
 
     fill_matrix(test_matrix, file);
     matrix* sorted_matrix = nullptr;
-    sort_matrix(test_matrix, &sorted_matrix);
+    sort_matrix(test_matrix, &sorted_matrix, comparator);
 
     for (size_t i = 0; i < 16; ++i) {
         EXPECT_LE(sorted_matrix->elements[i] - sorted_values[i], 1e-12);

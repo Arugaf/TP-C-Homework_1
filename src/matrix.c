@@ -62,10 +62,6 @@ int fill_matrix(matrix* source_matrix, FILE* input) {
     return 0;
 }
 
-int comparator(const void* ls, const void* rs) {
-    return (((elems_with_indexes*)ls)->element_value > ((elems_with_indexes*)rs)->element_value);
-}
-
 static void calculate_indexes(elems_with_indexes** array_to_fill, const matrix* source_matrix) {
     for (size_t i = 0; i < source_matrix->cols; ++i) {
         (*array_to_fill)[i].element_value = source_matrix->elements[i];
@@ -81,7 +77,53 @@ static void mix_values(elems_with_indexes* array_with_indexes, const matrix* sou
     }
 }
 
-int sort_matrix(const matrix* source_matrix, matrix** dest) {
+static void merge(elems_with_indexes* array, size_t l_start, size_t l_end, size_t r_start, size_t r_end,
+                  int (*compar)(const void*, const void*)) {
+    elems_with_indexes* buf = malloc(sizeof(elems_with_indexes) * (r_end - l_start + 1));
+
+    if (!buf) {
+        return;
+    }
+
+    size_t i = l_start;
+    size_t j = r_start;
+    size_t k = 0;
+
+    while (i <= l_end && j <= r_end) {
+        if (compar(&array[i], &array[j])) {
+            buf[k++] = array[i++];
+        } else {
+            buf[k++] = array[j++];
+        }
+    }
+
+    while (i <= l_end) {
+        buf[k++] = array[i++];
+    }
+
+    while(j <= r_end) {
+        buf[k++] = array[j++];
+    }
+
+    for (i = l_start, j = 0; i <= r_end; ++i, ++j) {
+        array[i] = buf[j];
+    }
+
+    free(buf);
+}
+
+static void merge_sort(elems_with_indexes * array, size_t start, size_t end, int (*compar)(const void*, const void*)) {
+    size_t mid;
+
+    if (start < end) {
+        mid = (start + end) / 2;
+        merge_sort(array, start, mid, compar);
+        merge_sort(array, mid + 1, end, compar);
+        merge(array, start, mid, mid + 1, end, compar);
+    }
+}
+
+int sort_matrix(const matrix* source_matrix, matrix** dest, int (*compar)(const void*, const void*)) {
     if (!source_matrix || !source_matrix->elements) {
         return INVALID_DATA;
     }
@@ -94,7 +136,8 @@ int sort_matrix(const matrix* source_matrix, matrix** dest) {
 
     calculate_indexes(&elements_and_indexes, source_matrix);
 
-    qsort(elements_and_indexes, source_matrix->cols, sizeof(elems_with_indexes), comparator);
+    //qsort(elements_and_indexes, source_matrix->cols, sizeof(elems_with_indexes), comparator);
+    merge_sort(elements_and_indexes, 0, source_matrix->cols - 1, compar);
 
     if (create_matrix(dest, source_matrix->rows, source_matrix->cols)) {
         free(elements_and_indexes);

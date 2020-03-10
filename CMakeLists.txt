@@ -9,15 +9,15 @@ set(CMAKE_C_STANDARD 11)
 set(includes ${PROJECT_SOURCE_DIR}/include)
 include_directories(${includes})
 
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.c)
-
-add_executable(${project_name} ${sources})
+add_executable(${project_name} src/main.c)
 
 enable_testing()
 add_subdirectory(googletest)
 add_subdirectory(test)
 
 add_library(${project_name}_lib STATIC ${PROJECT_SOURCE_DIR}/src/matrix.c)
+
+target_link_libraries(${project_name} ${project_name}_lib)
 
 if(ENABLE_COVERAGE)
     set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
