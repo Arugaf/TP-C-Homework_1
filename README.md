@@ -1,5 +1,7 @@
 # TP-C-Homework_1
 
+[![Build Status](https://travis-ci.org/Arugaf/TP-C-Homework_1.svg?branch=making-hw)](https://travis-ci.org/Arugaf/TP-C-Homework_1) [![Coverage Status](https://coveralls.io/repos/github/Arugaf/TP-C-Homework_1/badge.svg?branch=making-hw)](https://coveralls.io/github/Arugaf/TP-C-Homework_1?branch=making-hw)
+
 Составить программу перестановки столбцов двумерной матрицы в порядке возрастания элементов первой строки. Матрица задана в виде одномерного линеаризованного массива (сначала в ней следуют элементы первой строки, затем — второй и т.д.). На выход функция должна возвращать указатель на результирующую структуру.
 
 Требования к оформлению:
