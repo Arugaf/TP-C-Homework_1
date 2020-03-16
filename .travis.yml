@@ -1,0 +1,42 @@
+sudo: required
+dist: trusty
+
+branches:
+  only:
+    - /.*/
+
+language: c
+
+os: linux
+
+compiler:
+  - gcc
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - cmake
+      - gcc-7
+      - g++-7
+      - valgrind
+      - cppcheck
+      - lcov
+
+script:
+  - pip install --user cpp-coveralls
+  - sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc
+  - sudo ln -s /usr/bin/g++-7 /usr/local/bin/g++
+  - export CC=/usr/bin/gcc-7
+  - export CXX=/usr/bin/g++-7
+  - mkdir -p build
+  - cd build
+  - cmake -DENABLE_COVERAGE=ON -DCMAKE_CXX_COMPILER="g++-7" ..
+  - make
+  - valgrind --tool=memcheck --leak-check=full --leak-resolution=med ./test/matrix_test
+  - cppcheck --enable=all --std=c11 --check-config --suppress=missingIncludeSystem -I ../include ../src
+  - ctest
+
+after_success:
+  - coveralls --root .. --build-root . -E ".*CMakeFiles.*" -E ".*googletest*" --gcov /usr/bin/gcov --gcov-options '\-lp'
